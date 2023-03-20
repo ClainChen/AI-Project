@@ -31,10 +31,11 @@ def LoadCSVFile() -> str:
 
     while not check:
         try:
-            fileAddress = input("请输入csv文件相对路径： ")
+            fileAddressHeader = "../" #CSV文件存储位置
+            fileAddress = fileAddressHeader + input("请输入csv文件名称： ")
             file = open(fileAddress)
         except FileNotFoundError:
-            print("无效路径！")
+            print("无效文件！")
         else:
             print("文件获取成功")
             result = file.read()
@@ -47,8 +48,7 @@ def main():
     Main entry point for program.
     """
 
-    print("请输入csv文件相对路径，推荐将csv文件放在此项目根目录中。")
-    print("如项目给的默认csv文件名为test.csv，所以就输入 ../test.csv")
+    print("请输入csv文件名，请将csv文件放在设定好的文件夹中（默认为根目录）。")
     initialBoard = LoadCSVFile()
     input = parse_input(initialBoard)
     sequence: list[tuple] = search(input)
