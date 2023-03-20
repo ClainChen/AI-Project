@@ -1,8 +1,9 @@
-#这个文件用来测试输出结果
-#总而言之就是可以操作这个文件来debug
+# 这个文件用来测试输出结果
+# 总而言之就是可以操作这个文件来debug
 
 from sys import stdin
 from program import search
+
 
 def parse_input(input: str) -> dict[tuple, tuple]:
     """
@@ -31,7 +32,7 @@ def LoadCSVFile() -> str:
 
     while not check:
         try:
-            fileAddressHeader = "../" #CSV文件存储位置
+            fileAddressHeader = "../"  # CSV文件存储位置
             fileAddress = fileAddressHeader + input("请输入csv文件名称： ")
             file = open(fileAddress)
         except FileNotFoundError:
@@ -43,6 +44,7 @@ def LoadCSVFile() -> str:
 
     return result
 
+
 def main():
     """
     Main entry point for program.
@@ -51,6 +53,7 @@ def main():
     print("请输入csv文件名，请将csv文件放在设定好的文件夹中（默认为根目录）。")
     initialBoard = LoadCSVFile()
     input = parse_input(initialBoard)
+    # print(input)
     sequence: list[tuple] = search(input)
     print_sequence(sequence)
 
