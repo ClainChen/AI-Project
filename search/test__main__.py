@@ -1,6 +1,6 @@
 # 这个文件用来测试输出结果
 # 总而言之就是可以操作这个文件来debug
-
+import time
 from sys import stdin
 from program import search
 
@@ -53,9 +53,12 @@ def main():
     print("请输入csv文件名，请将csv文件放在设定好的文件夹中（默认为根目录）。")
     initialBoard = LoadCSVFile()
     input = parse_input(initialBoard)
-    # print(input)
+
+    start = time.perf_counter_ns()
     sequence: list[tuple] = search(input)
     print_sequence(sequence)
+    end = time.perf_counter_ns()
+    print(end - start)
 
 
 if __name__ == "__main__":

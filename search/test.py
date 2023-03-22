@@ -1,6 +1,6 @@
 # 这个文件是用来测试一些不确定的代码的
 
-a = {"a": 1, "b": 2}
-b = [("a", 1), ("a", 2), ("a", 3)]
-b.sort(key= lambda x: x[1], reverse=True)
-print(b)
+s = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+print(s.pop())
+print(s.pop())
+print(s)

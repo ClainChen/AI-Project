@@ -129,36 +129,30 @@ def single_spread(chessBoard: dict[tuple, tuple], position: tuple, direction: st
 def heuristic(chessBoard: dict[tuple, tuple]) -> int:
     redChess: list[tuple] = []
     blueChess: list[tuple] = []
-    countBlue = 0
     result = 0
     for chess in chessBoard.values():
         redChess.append(chess) if chess[0] == "r" else blueChess.append(chess)
-        if chess[0] == "b":
-            countBlue += 1
     redChess.sort(key=lambda x: x[1], reverse=True)
-    blueChess.sort(key=lambda x: x[1], reverse=True)
+    blueChess.sort(key=lambda x: x[1])
 
     while True:
-        print(result, "checking")
-        print("Count Blues: ", countBlue)
         checkingChess = redChess[0]
-        print(checkingChess)
         del redChess[0]
-        countBlue -= checkingChess[1]
         result += 1
         for i in range(checkingChess[1]):
-            changeChess = ("r", addition(blueChess[i][1]))
+            if len(blueChess) == 0:
+                return result
+            changeChess = ("r", addition(blueChess.pop()[1]))
             if changeChess[1] != 0:
-                for chess in redChess:
-                    if len(redChess) == 0:
-                        redChess[0] = changeChess
-                    elif changeChess[1] > chess[1]:
-                        redChess.insert(redChess.index(chess), changeChess)
-                        break
-        try:
-            del blueChess[0:checkingChess[1]]
-        except IndexError:
-            return result
+                if len(redChess) == 0 or changeChess[1] <= redChess[-1][1]:
+                    redChess.append(changeChess)
+                else:
+                    if changeChess[1] <= redChess[-1][1]:
+                        redChess.append(changeChess)
+                    for chess in redChess:
+                        if changeChess[1] > chess[1]:
+                            redChess.insert(redChess.index(chess), changeChess)
+                            break
 
 
 
