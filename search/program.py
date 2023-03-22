@@ -36,6 +36,10 @@ def movement(currentPosition: tuple, direction: tuple) -> tuple[int, int]:
     return newPosition
 
 
+def addition(value: int) -> int:
+    return 0 if value + 1 > 6 else value + 1
+
+
 def spread(chessBoard: dict[tuple, tuple], position: tuple) -> list[dict[tuple, tuple]]:
     """
     This method is use for spread a red chess to the specific direction
@@ -68,16 +72,96 @@ def spread(chessBoard: dict[tuple, tuple], position: tuple) -> list[dict[tuple, 
                     # print("New Position: ", newPos)
                     if interBoard.__contains__(newPos):
                         value = interBoard[newPos][1]
-                        newTuple = ("r", 0 if value + 1 > 6 else value + 1)
+                        newTuple = ("r", addition(value))
                         interBoard[newPos] = newTuple
                     else:
                         interBoard[newPos] = ("r", 1)
                     interPos = newPos
+                # Delete the original cell in position
                 del interBoard[position]
                 result.append(interBoard)
                 # print("----------")
 
             return result
+
+
+def single_spread(chessBoard: dict[tuple, tuple], position: tuple, direction: str) -> dict[tuple, tuple]:
+    """
+    Spread a chess to a specific direction
+    """
+    if direction not in moveDirection.keys():
+        print("This direction is invalid")
+        return {}
+
+    try:
+        operatingChess = chessBoard[position]
+    except KeyError:
+        print("This position do not have any chess!")
+        return {}
+    else:
+        if operatingChess[0] != "r":
+            print("The red chess is not in this cell!")
+            return {}
+
+        else:
+            chessLevel = operatingChess[1]
+            interPos = position
+            # print("moving", key)
+            interBoard = chessBoard.copy()
+            direction = moveDirection[direction]
+            for i in range(chessLevel):
+                newPos = movement(interPos, direction)
+                # print("New Position: ", newPos)
+                if interBoard.__contains__(newPos):
+                    value = interBoard[newPos][1]
+                    newTuple = ("r", addition(value))
+                    interBoard[newPos] = newTuple
+                else:
+                    interBoard[newPos] = ("r", 1)
+                interPos = newPos
+            # Delete the original cell in position
+            del interBoard[position]
+            result = interBoard
+            # print("----------")
+            return result
+
+
+def heuristic(chessBoard: dict[tuple, tuple]) -> int:
+    redChess: list[tuple] = []
+    blueChess: list[tuple] = []
+    countBlue = 0
+    result = 0
+    for chess in chessBoard.values():
+        redChess.append(chess) if chess[0] == "r" else blueChess.append(chess)
+        if chess[0] == "b":
+            countBlue += 1
+    redChess.sort(key=lambda x: x[1], reverse=True)
+    blueChess.sort(key=lambda x: x[1], reverse=True)
+
+    while True:
+        print(result, "checking")
+        print("Count Blues: ", countBlue)
+        checkingChess = redChess[0]
+        print(checkingChess)
+        del redChess[0]
+        countBlue -= checkingChess[1]
+        result += 1
+        for i in range(checkingChess[1]):
+            changeChess = ("r", addition(blueChess[i][1]))
+            if changeChess[1] != 0:
+                for chess in redChess:
+                    if len(redChess) == 0:
+                        redChess[0] = changeChess
+                    elif changeChess[1] > chess[1]:
+                        redChess.insert(redChess.index(chess), changeChess)
+                        break
+        try:
+            del blueChess[0:checkingChess[1]]
+        except IndexError:
+            return result
+
+
+
 
 
 def search(input: dict[tuple, tuple]) -> list[tuple]:
@@ -93,10 +177,7 @@ def search(input: dict[tuple, tuple]) -> list[tuple]:
     # board state in a human-readable format. Try changing the ansi argument 
     # to True to see a colour-coded version (if your terminal supports it).
     print(render_board(input, ansi=False))
-    for key, value in input.items():
-        if value[0] == "r":
-            position = key
-    newBoards = spread(input, position)
+    print(heuristic(input))
 
     # count = 1
     # for each in newBoards:
