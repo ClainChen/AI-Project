@@ -2,7 +2,7 @@
 # Project Part A: Single Player Infexion
 
 from utils import render_board
-import BoardTree
+from BoardNode import BoardNode
 
 """
 The Dictionary which stores the move method
@@ -181,15 +181,23 @@ def search(input: dict[tuple, tuple]) -> list[tuple]:
     # The render_board function is useful for debugging -- it will print out a 
     # board state in a human-readable format. Try changing the ansi argument 
     # to True to see a colour-coded version (if your terminal supports it).
-    print(render_board(input, ansi=False))
-    print(heuristic(input))
 
-    # count = 1
-    # for each in newBoards:
-    #     print(count, "---------------------")
-    #     print(each)
-    #     print(render_board(each, ansi=False))
-    #     count += 1
+    print(render_board(input, ansi=False))
+    # print(heuristic(input))
+
+    returnPath: list[tuple] = []
+    indexDict = {}
+    # initialize root node
+    currentNode = BoardNode(input, None)
+    for nodeKey, nodeValue in currentNode.board.items():
+        if nodeValue[0] == "r":
+            for directon in moveDirection.keys():
+                childBoard = single_spread(currentNode.board, nodeKey, directon)
+                childNode = BoardNode(childBoard, currentNode)
+                childNode.setLevel(currentNode.getLevel() + 1)
+
+
+
 
     # Here we're returning "hardcoded" actions for the given test.csv file.
     # Of course, you'll need to replace this with an actual solution...
