@@ -2,6 +2,7 @@
 # Project Part A: Single Player Infexion
 
 from utils import render_board
+import BoardTree
 
 """
 The Dictionary which stores the move method
@@ -127,6 +128,14 @@ def single_spread(chessBoard: dict[tuple, tuple], position: tuple, direction: st
 
 
 def heuristic(chessBoard: dict[tuple, tuple]) -> int:
+    """
+    The algorithm of heuristic.
+    1. Find the largest number of red chess
+    2. spread this red chess directly to the blue chess start from the largest
+    3. repeat 1 and 2 until there are no more blue chess left
+    4. The number of operation is the result of heuristic
+    """
+
     redChess: list[tuple] = []
     blueChess: list[tuple] = []
     result = 0
@@ -134,6 +143,11 @@ def heuristic(chessBoard: dict[tuple, tuple]) -> int:
         redChess.append(chess) if chess[0] == "r" else blueChess.append(chess)
     redChess.sort(key=lambda x: x[1], reverse=True)
     blueChess.sort(key=lambda x: x[1])
+    '''
+    Put everything chess into list of redChess and blueChess separately, and sort them. 
+    redChess sort from largest to smallest
+    blueChess sort from smallest to largest
+    '''
 
     while True:
         checkingChess = redChess[0]
@@ -153,9 +167,6 @@ def heuristic(chessBoard: dict[tuple, tuple]) -> int:
                         if changeChess[1] > chess[1]:
                             redChess.insert(redChess.index(chess), changeChess)
                             break
-
-
-
 
 
 def search(input: dict[tuple, tuple]) -> list[tuple]:
