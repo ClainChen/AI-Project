@@ -186,25 +186,96 @@ def search(input: dict[tuple, tuple]) -> list[tuple]:
     # print(heuristic(input))
 
     returnPath: list[tuple] = []
-    indexDict = {}
+    # this dict store cost value and last node in the linked list with this cost
+    indexDict: dict[int, BoardNode] = {}
     # initialize root node
     currentNode = BoardNode(input, None)
-    for nodeKey, nodeValue in currentNode.board.items():
-        if nodeValue[0] == "r":
-            for directon in moveDirection.keys():
-                childBoard = single_spread(currentNode.board, nodeKey, directon)
-                childNode = BoardNode(childBoard, currentNode)
-                childNode.setLevel(currentNode.getLevel() + 1)
+
+    while not currentNode.win():
+        # print("1\n")
+        # find all red chess on current board
+        for nodeKey, nodeValue in currentNode.board.items():
+            if nodeValue[0] == "r":
+                # spread it in 6 directions
+                for direction in moveDirection.keys():
+                    # creat child node and set its values
+                    childBoard = single_spread(currentNode.board, nodeKey, direction)
+                    childNode = BoardNode(childBoard, currentNode)
+                    childNode.level = currentNode.level + 1
+                    childNode.cost = childNode.level + heuristic(childNode.board)
+                    childNode.changeDirection = moveDirection[direction]
+                    childNode.changePosition = nodeKey
+                    # insert it in after the last node with the same cost in the linked list if it exists
+                    if indexDict.__contains__(childNode.cost):
+                        # set the last and next node of child node
+                        childNode.lastNode = indexDict.get(childNode.cost)
+                        childNode.nextNode = indexDict.get(childNode.cost).nextNode
+                        # set next node's last node to child node if it exists
+                        if indexDict.get(childNode.cost).nextNode is not None:
+                            indexDict.get(childNode.cost).nextNode.lastNode = childNode
+                        # set last node's next node to child node
+                        indexDict.get(childNode.cost).nextNode = childNode
+                        # set index to last node with this cost to child node
+                        indexDict[childNode.cost] = childNode
+                    # if this is the first node with this cost, check if there are node with 1 less cost
+                    elif indexDict.__contains__(childNode.cost - 1):
+                        # set the last and next node of child node
+                        childNode.lastNode = indexDict.get(childNode.cost - 1)
+                        childNode.nextNode = indexDict.get(childNode.cost - 1).nextNode
+                        # set next node's last node to child node if it exists
+                        if indexDict.get(childNode.cost - 1).nextNode is not None:
+                            indexDict.get(childNode.cost - 1).nextNode.lastNode = childNode
+                        # set last node's next node to child node
+                        indexDict.get(childNode.cost - 1).nextNode = childNode
+                        # set index to last node with this cost to child node
+                        indexDict[childNode.cost] = childNode
+                    else:
+                        nextnode = currentNode.nextNode
+                        while nextnode is not None and nextnode.cost <= childNode.cost:
+                            nextnode = nextnode.nextNode
+                        if nextnode is not None:
+                            # set the last and next node of child node
+                            childNode.lastNode = nextnode.lastNode
+                            childNode.nextNode = nextnode
+                            # set last node's next node to child node if it exists
+                            if nextnode.lastNode is not None:
+                                nextnode.lastNode.nextNode = childNode
+                            # set next node's last node to child node
+                            nextnode.lastNode = childNode
+                            # set index to last node with this cost to child node
+                            indexDict[childNode.cost] = childNode
+                        else:
+                            # link child node and parent node
+                            childNode.lastNode = currentNode
+                            currentNode.nextNode = childNode
+                            # set index to last node with this cost to child node
+                            indexDict[childNode.cost] = childNode
+
+        currentNode = currentNode.nextNode
+        if currentNode is None:
+            print("You stupid make trash output, mother fucker")
+
+    print(render_board(currentNode.board, ansi=False))
+    result = []
+    while currentNode.level != 0:
+        if len(result) == 0:
+            result.append(currentNode.getOutCome())
+        else:
+            result.insert(0, currentNode.getOutCome())
+        currentNode = currentNode.parentNode
+
+    return result
+
 
 
 
 
     # Here we're returning "hardcoded" actions for the given test.csv file.
     # Of course, you'll need to replace this with an actual solution...
-    return [
+    '''return [
         (5, 6, -1, 1),
         (3, 1, 0, 1),
         (3, 2, -1, 1),
         (1, 4, 0, -1),
         (1, 3, 0, -1)
-    ]
+    ]'''
