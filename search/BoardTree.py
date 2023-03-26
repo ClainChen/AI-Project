@@ -1,9 +1,9 @@
 class BoardTree:
-    def __init__(self, board):
+    def __init__(self, board, parent=None):
         self.board = board
         self.level = 0
         self.heuristicScore = 0
-        self.parent = None
+        self.parent = parent
         self.up = None
         self.down = None
         self.rightUp = None
@@ -11,20 +11,20 @@ class BoardTree:
         self.leftUp = None
         self.leftDown = None
 
-    def insertToDirection(self, direction: str, board):
+    def insertToDirection(self, direction: str, node):
         match direction:
             case "up":
-                self.up = board
+                self.up = node
             case "down":
-                self.down = board
+                self.down = node
             case "rightUp":
-                self.rightUp = board
+                self.rightUp = node
             case "rightDown":
-                self.rightDown = board
+                self.rightDown = node
             case "leftUp":
-                self.leftUp = board
+                self.leftUp = node
             case "leftDown":
-                self.leftDown = board
+                self.leftDown = node
             case _:
                 print("The input direction is invalid!\n"
                       "Available direction: up, down, rightUp, rightDown, leftUp, leftDown")
@@ -47,8 +47,6 @@ class BoardTree:
                 print("The input direction is invalid!\n"
                       "Available direction: up, down, rightUp, rightDown, leftUp, leftDown")
 
-    def setParent(self, board):
-        self.parent = board
 
     def getParent(self):
         return self.parent

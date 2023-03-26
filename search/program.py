@@ -12,10 +12,10 @@ Value is the coordinate translation which store with tuple
 moveDirection: dict[str, tuple[int, int]] = {
     "up": (1, -1),
     "down": (-1, 1),
-    "right up": (1, 0),
-    "right down": (0, 1),
-    "left up": (0, -1),
-    "left down": (-1, 0)
+    "rightUp": (1, 0),
+    "rightDown": (0, 1),
+    "leftUp": (0, -1),
+    "leftDown": (-1, 0)
 }
 
 
