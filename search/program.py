@@ -182,7 +182,7 @@ def search(input: dict[tuple, tuple]) -> list[tuple]:
     # board state in a human-readable format. Try changing the ansi argument 
     # to True to see a colour-coded version (if your terminal supports it).
 
-    print(render_board(input, ansi=False))
+    # print(render_board(input, ansi=False))
     # print(heuristic(input))
 
     returnPath: list[tuple] = []
@@ -252,10 +252,8 @@ def search(input: dict[tuple, tuple]) -> list[tuple]:
                             indexDict[childNode.cost] = childNode
 
         currentNode = currentNode.nextNode
-        if currentNode is None:
-            print("You stupid make trash output, mother fucker")
 
-    print(render_board(currentNode.board, ansi=False))
+    # print(render_board(currentNode.board, ansi=False))
     result = []
     while currentNode.level != 0:
         if len(result) == 0:
